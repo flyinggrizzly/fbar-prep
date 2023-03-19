@@ -1,0 +1,40 @@
+first_csv_row_is: old
+csv_filename_strptime_date_format: "maximally_stupid_export_format_%Y, %b, %d.csv"
+mappings:
+  date:
+    field: Date
+    format: '%d-%b-%Y'
+  details:
+    compute:
+      concat:
+        - compute:
+            prefix:
+              - Payee
+              - payee=
+        - compute:
+            prefix:
+              - Payer
+              - payer=
+        - Hashtags and Emojis
+  type: Transaction Type
+  amount:
+    compute:
+      first_not_null:
+        - In
+        - compute:
+            multiply:
+              - $CONSTANTS.MINUS_ONE
+              - Out
+        - $CONSTANTS.ZERO
+  balance:
+    compute:
+      add:
+        - $TRANSACTIONS.PREVIOUS_BALANCE
+        - compute:
+            first_not_null:
+              - In
+              - compute:
+                  multiply:
+                    - $CONSTANTS.MINUS_ONE
+                    - Out
+              - $CONSTANTS.ZERO

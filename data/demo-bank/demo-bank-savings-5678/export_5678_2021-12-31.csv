@@ -1,0 +1,4 @@
+Date,Details,Amount,Transaction Type,Balance
+2021-12-31,From a friend,-100.01,BACS,2000.00
+2021-12-31,save some cash,1950.00,BACS,2100.01
+2021-12-04,initial deposit,150.01,Teller deposit,150.01

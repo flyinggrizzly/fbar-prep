@@ -1,0 +1,11 @@
+first_csv_row_is: new
+csv_filename_strptime_date_format: "export_5678_%Y-%m-%d.csv"
+mappings:
+  date:
+    field: Date
+    format: "%Y-%m-%d"
+  details: Details
+  balance: Balance
+  amount: Amount
+  type: Transaction Type
+

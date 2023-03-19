@@ -1,0 +1,26 @@
+providers:
+  #- handle: same name as the folder for the provider in the data directory, REQUIRED
+    #name: legal name of the bank, REQUIRED
+    #address: address of the bank branch, REQUIRED
+  - handle: demo-bank
+    name: Demo Bank PLC
+    address: 123 Bankers Row, London, W1 1FU, UK
+accounts:
+  #- handle: same name as the subfolder for the account exports, REQUIRED
+    #provider: same as the provider handle in the `providers` section above, REQUIRED
+    #type: current | savings | pension | investment etc, REQUIRED
+    #opening_date: ISO format date, REQUIRED
+    #closing_date: ISO format date
+    #number: for current and savings accounts
+    #policy_number: for pension accounts, use instead of number + sort
+    #sort: for current and savings accounts
+    #joint: true | false
+    #virtual: true | false for accounts like Monzo pots that are not actual accounts but have separate balace sheets
+  - handle: demo-bank-daily-1234
+    type: current
+    provider: demo-bank
+    opening_date: 2021-05-01
+  - handle: demo-bank-savings-5678
+    provider: demo-bank
+    type: savings
+    opening_date: 2021-12-04
