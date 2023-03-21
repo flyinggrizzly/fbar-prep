@@ -39,6 +39,7 @@ module FBARPrep
     def_delegators :@account_record,
       :handle,
       :provider,
+      :currency,
       :opening_date,
       :address,
       :full_provider_name

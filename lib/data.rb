@@ -65,6 +65,7 @@ module FBARPrep
       :handle,
       :type,
       :provider,
+      :currency,
       :number,
       :sort_code,
       :opening_date,

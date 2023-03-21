@@ -17,7 +17,7 @@ accounts:
     policy_number: TK1234 # pension or investment account identifier, used in generated reports
     joint: true | false # whether the account is jointly held, optional
     virtual: true | false # whether the account is a virtual one like a Monzo pot, optional
-
+    currency: ISO currency code
 ```
 
 ## `providers`
@@ -37,6 +37,7 @@ Add an entry for every account you have. Accounts have 3 required fields, and a 
 - `provider`, required, and must be one of the `handle`s for one of the providers defined in the YAML file
 - `opening_date`, required, used for some checks whether the account might be missing some data
 - `type`, required, if the type is of `current` or `savings` this triggers some bank-specific behavior
+- `currency`, required
 
 **Optional fields:**
 
