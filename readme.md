@@ -2,6 +2,18 @@
 
 A CLI tool to calculate values required to report in an FBAR for the IRS.
 
+## DISCLAIMER
+
+I am not a lawyer. I am not a qualified tax professional. This tool is provided as-is, bugs included, and is used at
+your own risk.
+
+Mistakes filing the FBAR can be $10k *per misfiled account*, so please use this tool responsibly, wisely, and
+skeptically. It might be wrong. You should review, or have a tax professional review, the results of it and your FBAR
+report before you submit them to the IRS.
+
+I don't *think* there are bugs here, but [smarter people than me have fucked up
+worse](https://www.wired.com/2010/11/1110mars-climate-observer-report/), so treat this tool with hostility.
+
 ## The problem
 
 The IRS requires that US persons report the balance of all foreign financial accounts on the day that the combined total
