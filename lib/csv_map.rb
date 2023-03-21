@@ -55,7 +55,6 @@ module FBARPrep
       mappings.each do |our_field, foreign_field_data|
         value = ValueMappers.map(our_field, foreign_field_data, csv_row, transactions)
 
-
         row.public_send("#{our_field}=", transform_value(our_field, value))
       end
 
