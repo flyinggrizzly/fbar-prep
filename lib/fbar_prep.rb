@@ -1,6 +1,7 @@
 require 'date'
 require 'active_support/all'
 
+require_relative './currency'
 require_relative './account'
 require_relative './check_sequentiality_of_statements'
 require_relative './generate_fbar_report'

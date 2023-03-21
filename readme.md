@@ -58,9 +58,11 @@ Install the tool with `bundle install`. Depends on Ruby 3.1+
 
 In the `data/` directory...
 
-1. add a `fatca.yml` file, with a top-level key of `fatca_thresholds`, followed by key-value pairs matching a year to
-   the FATCA threshold for that year converted into your local currency. `data/fatca.demo.yml` is provided as an example
-   for GBP for the years 2016-2021.
+1. add a `fatca.yml` file, with a top-level key of of `irs_published_exchange_rates`, followed by blocks for any
+   currencies you need (e.g. `gbp`, `eur`). Under these blocks add key-value pair entries for each year you need to
+   report, with the IRS published exchange rate for that year as the value (this should be the Dollar -> Local exchange
+   rate, with for GBP is usually < 1.0). You can find the rates, or instructions for finding other rates, on [the IRS
+   site](https://www.irs.gov/individuals/international-taxpayers/yearly-average-currency-exchange-rates)
 2. for each bank/pension provider you have data for, create a subdirectory with a simple name (e.g. "Barclays PLC" =>
    "barclays")
 3. for each account with each provider, create a subdirectory for the account with a simple name (e.g.

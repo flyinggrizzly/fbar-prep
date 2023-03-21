@@ -34,7 +34,8 @@ module FBARPrep
             opening_date: yaml_record.fetch('opening_date'),
             closing_date: yaml_record.fetch('closing_date', nil),
             joint: yaml_record.fetch('joint', false),
-            virtual: yaml_record.fetch('virtual', false)
+            virtual: yaml_record.fetch('virtual', false),
+            currency: yaml_record.fetch('currency')
           )
         end
 
