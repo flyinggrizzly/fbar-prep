@@ -6,6 +6,7 @@ At time of writing, there are two (with some special cases for one):
 
 - `$TRANSACTIONS.PREVIOUS_BALANCE`
 - `$CONSTANTS.NUMBER[n]`
+- `$CONSTANTS.NULL`
 
 ## `$TRANSACTIONS.PREVIOUS_BALANCE`
 
@@ -32,3 +33,6 @@ Floats are always returned.
 The requirement for the Number constant exists because the mapping shorthand of `in: In` is more useful most of the
 time. Therefore special formatting is required to indicate an actual value to be used, instead of a CSV header/key.
 
+## `$CONSTANTS.NULL`
+
+Evaluates to `nil`.

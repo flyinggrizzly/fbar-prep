@@ -4,7 +4,6 @@ Mapping files should be written in JSON or YAML.
 
 The required keys are:
 
-- `csv_filename_strptime_date_format`
 - `first_csv_row_is`
 - `mappings`
   - `balance`
@@ -31,34 +30,25 @@ mappings:
     format: %Y-%m-%d
 ```
 
-## Required entries
-
-### `csv_filename_strptime_date_format`
-
-This is a `strftime`/`strptime` formatting string passed to `Date.strptime(mapped_csv_field,
-csv_filename_strptime_date_format)` to extract the date from the CSV filename.
-
-These either represent the time the CSV was generated (e.g. first business day following the close of the
-month/quarter), or the time the report was accessed (e.g. last Friday when you panicked about the IRS filing deadline).
-
-As such, these aren't all that meaningful, but if you're doing more here than generating a CSV they can be useful to
-determine which CSV file some data came from.
+## Mappable fields
 
 ### `first_csv_row_is`
 
 Some banks do ascending date order, others do descending, and I hope to god those are the only options.
 
-`newest` indicates the CSV is in descending date order.
+`newest` or `new` indicate the CSV is in descending date order.
 
-`oldest` indicates the CSV is in ascending date order.
+`oldest` or `old` indicate the CSV is in ascending date order.
 
 ### `mappings`
 
-#### `balance`
+These are applied to each CSV row to extract transaction data.
+
+#### `balance` - Required
 
 The value of the account after the transaction represented by the row is complete.
 
-#### `date`
+#### `date` - Required
 
 The date of the transaction row.
 
@@ -70,9 +60,19 @@ This has two required subfields:
 `format` is required because this tool is specifically intended for cross-border users, and guessing at dates is hard
 enough as a human, and I don't trust computers any more than I do me (which is to say very very little).
 
-## Optional entries
+#### `amount`
 
-TODO
+A signed Float representing monetary change the transaction creates. Not rendered in final outputs.
+
+#### `details`
+
+Things like payee, payer, reference etc.
+
+Useful with `compute.concat`, though this is not rendered in the final report output (currently).
+
+#### `type`
+
+Transaction type (BACS, inter-account, etc). Also not rendered in final output.
 
 ## Computing a mapping when it's not simple
 

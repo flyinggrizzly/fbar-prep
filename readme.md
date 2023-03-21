@@ -38,7 +38,7 @@ It then produces a CSV that includes:
 
 ## Limitations
 
-- currently assumes a single currency (default config data is for GBP in `data/facta.yml`)
+- currently assumes a single currency (default config data is for GBP in `data/fatca.yml`)
 - it's unclear if EOD or Max is the appropriate strategy for reporting in the FBAR
 
 ### EOD vs. Max
@@ -56,19 +56,27 @@ Install the tool with `bundle install`. Depends on Ruby 3.1+
 
 ### Data prep
 
-1. in the `data/` directory, for every bank/provider with which you have an account create a directory, and then...
-2. for each account at that provider, create a sub-directory named for a memorable handle (e.g. "barclays-daily-1234")
-3. place any CSV files for the account in that folder. You don't need to limit these to a specific year, the tool will
+In the `data/` directory...
+
+1. add a `fatca.yml` file, with a top-level key of `fatca_thresholds`, followed by key-value pairs matching a year to
+   the FATCA threshold for that year converted into your local currency. `data/fatca.demo.yml` is provided as an example
+   for GBP for the years 2016-2021.
+2. for each bank/pension provider you have data for, create a subdirectory with a simple name (e.g. "Barclays PLC" =>
+   "barclays")
+3. for each account with each provider, create a subdirectory for the account with a simple name (e.g.
+   `data/barclays/barclays-daily-1234`). Repeat this for every account with every provider. Put your export CSV data
+   for the account here. You don't need to limit these to a specific year, the tool will
    only produce a report for the year you request in the CLI (tl;dr date filtering happens at runtime)
-4. in either the bank/provider folder, or in the specific account folders if necessary, create a `mappings.yml` or
-   `mappings.json` file to tell the tool how to convert from your CSV format into its own `Statement::Transaction`
+4. in either the bank/provider folder, or in the specific account folders if necessary, create a `mapping.yml` or
+   `mapping.json` file to tell the tool how to convert from your CSV format into its own `Statement::Transaction`. See
+   [detailed documentation for format and complex mapping cases](./docs/mapping_files.md)
     - the tool will first look for account specific mappings before provider-level, so if some exports are funny you can
       keep them separate. Alternatively if a bank's export format changes you can just create a new folder for it to
       avoid pita mappings accounting for multiple formats
 5. Create an `accounts.yml` file in the `data/` root and add each account to it. Check the format in
-   `data/accounts.demo.yml` for reference
-6. Create `data/fatca.yml`, and add key-value pairs where the key is the year, and the value is the FBAR threshold for
-   that year based on the published IRS exchange rate (e.g. GBP for 2020 would be `2020: 7790`).
+   `data/accounts.demo.yml` for reference. Note that the `handle` entry you need for each account should be the same as
+   the account folder name (`barclays-daily-1234`) and the `provider` entry should match the provider folder
+   (`barclays`). See [docs for more detailed info](./docs/account_yml_files.md)
 
 Example filestructure:
 
@@ -85,10 +93,10 @@ data
 │   │   └── export-jun-30-2010.csv
 │   ├── legacy-csv-format-barclays-daily-1234
 │   │   ├── export-1999-12-01.csv
-│   │   └── mappings.yml
-│   └── mappings.yml
+│   │   └── mapping.yml
+│   └── mapping.yml
 └── nationwide-bs
-    ├── mappings.yml
+    ├── mapping.yml
     └── nationwide-shared-bills-1234
         └── export-03-apr-2011.csv
 ```
@@ -99,78 +107,42 @@ data in `legacy-csv-format-barclays-daily-1234` will prefer the local `barclays/
 
 #### Mappings files
 
+This section covers basic simple mapping cases, [see the docs for more difficult mappings require calculation or
+transformation](./docs/mapping_files.md)
+
 The required fields for `Statement::Transaction` objects are
 
 - `date` - `Date`
 - `balance` - `Float` or `nil`
-- `in` - `Float` or `nil`
-- `out` - `Float` or `nil`
+
+You can optionally include as well:
+
+- `amount` = `Float` or `nil`
 - `details` - `String` or `nil`
 - `type` - `String` or `nil`
 
-In addition, a `csv_filename_strptime_date_format` value is required, in order to identify the statement date. See [the
-Ruby docs on `Date.strftime`](https://ruby-doc.org/stdlib-2.4.1/libdoc/date/rdoc/Date.html#method-i-strftime) for
-formatting. **Be careful with this**, since banks are inconsistent with whether this is the date of generation (e.g. the
-end of the month being represented), or the date of access (the time the statement was downloaded). As a rule, this is
-there as a convenience and the row dates are far more important.
+Date mappings require both a `field` and a `format` entry, where the format [is one supported by
+`Date#strftime`](https://ruby-doc.org/stdlib-2.4.1/libdoc/date/rdoc/Date.html#method-i-strftime).
 
-Assuming a CSV with headers `Date`, `Balance`, `Money In`, `Money Out`, `Transaction Information`, `Type`, a minimal YAML
+Assuming a CSV with headers `Date`, `Balance`, `Amount`, `Transaction Information`, `Type`, a minimal YAML
 mapping would look like this:
 
 ```yaml
 mappings:
-  date: Date
+  date:
+    field: Date
+    format: '%Y-%m-%d'
   balance: Balance
-  in: Money In
-  out: Money Out
+  amount: Amount
   details: Transaction Information
   type: Type
-csv_filename_strptime_date_format: export-%d-%b-%Y.csv
-```
-
-However, more complex mappings may be required and are possible.
-
-Given a CSV that has the headers `TxnDate`, `Amount`, `TxnType`, `Notes`, and `Emoji and #tags` (yes I stg I have this), we have no
-native field to supply the `balance` and `in` and `out` values to our `Transaction` object. Additionally, for some wild
-reason the bank formats dates like `YYYY..MM..DD`, and so a transformation is required.
-
-A more complex mapping that computes a balance from the previous transaction and the current amount is possible:
-
-```yaml
-mappings:
-  date:
-    field: TxnDate
-    format: %Y..%d..%m
-  in:
-    compute:
-      if:
-        positive: Amount
-        then: Amount
-        else: null
-  out:
-    compute:
-      if:
-        negative: Amount
-        then: Amount
-        else: null
-  balance:
-    compute:
-      add:
-        - $TRANSACTIONS.PREVIOUS_BALANCE
-        - Amount
-  details:
-    compute:
-      concat:
-        - Notes
-        - Emoji and \#tags
-  type: TxnType
 ```
 
 ### Running the tool
 
 To generate a CSV report, once the tool is installed and data and mappings are prepped, run
 
-`bundle exec rake generate_csv YEARS=2020,2021,2022 [STRATEGY={both|max|eod}]]`
+`bundle exec rake generate_csv [YEARS=2020,2021,2022] [STRATEGY={both|max|eod}]]`
 
 It will generate a CSV for each year provided, using the strategy requested (default is to generate CSVs with data for
-both `eod` and `max` strategies).
+both `eod` and `max` strategies). Default years are all those provided in `data/fatca.yml`.
