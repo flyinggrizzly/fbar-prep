@@ -28,6 +28,8 @@ module FBARPrep
         highest_max = balances.max_by {|h| h[:max_balance]}
         date_of_highest_max_balance = highest_max[:date]
 
+        end_of_year = Date.new(year, 12, 31)
+
         data = [
           {
             'account' => nil,
@@ -38,8 +40,10 @@ module FBARPrep
             'highest combined max balance' => highest_max[:max_balance],
             'date of highest combined max balance' => strdate(date_of_highest_max_balance),
 
+            'balance at eoy' => nil,
             'highest eod account balance' => nil,
             'highest max account balance' => nil,
+            'bank address' => nil,
           }
         ]
 
@@ -53,8 +57,10 @@ module FBARPrep
             'highest combined max balance' => nil,
             'date of highest combined max balance' => nil,
 
+            'balance at eoy' => account.balance_on(end_of_year),
             'highest eod account balance' => account.balance_on(date_of_highest_eod_balance),
             'highest max account balance' => account.balance_on(date_of_highest_max_balance, :max),
+            'bank address' => account.address,
           })
         end
 
