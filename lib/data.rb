@@ -17,6 +17,10 @@ module FBARPrep
       YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('fatca_thresholds')
     end
 
+    def irs_exchange_rate_for(currency, year)
+      YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('irs_published_exchange_rates').fetch(currency).fetch(year)
+    end
+
     def account_records
       records = account_data.fetch('accounts')
         .reject {|a| a['pending']}
