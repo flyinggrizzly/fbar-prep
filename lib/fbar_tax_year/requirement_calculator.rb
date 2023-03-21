@@ -43,6 +43,7 @@ module FBARPrep
             'balance at eoy' => nil,
             'highest eod account balance' => nil,
             'highest max account balance' => nil,
+            'bank name' => nil,
             'bank address' => nil,
           }
         ]
@@ -60,6 +61,7 @@ module FBARPrep
             'balance at eoy' => account.balance_on(end_of_year),
             'highest eod account balance' => account.balance_on(date_of_highest_eod_balance),
             'highest max account balance' => account.balance_on(date_of_highest_max_balance, :max),
+            'bank name' => account.full_provider_name,
             'bank address' => account.address,
           })
         end

@@ -40,7 +40,8 @@ module FBARPrep
       :handle,
       :provider,
       :opening_date,
-      :address
+      :address,
+      :full_provider_name
 
     attr_reader :statements, :running_balance
 

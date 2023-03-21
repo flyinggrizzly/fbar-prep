@@ -85,6 +85,10 @@ module FBARPrep
         @provider_record ||= Data.provider_record_for_handle(provider)
       end
 
+      def full_provider_name
+        provider_record.name
+      end
+
       def address
         provider_record.address
       end
