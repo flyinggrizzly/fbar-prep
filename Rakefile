@@ -39,3 +39,7 @@ task :generate_csv do
     FBARPrep.generate_report(year, FBARPrep.accounts, strategy:)
   end
 end
+
+task :clean do
+  puts `rm output/*`
+end
