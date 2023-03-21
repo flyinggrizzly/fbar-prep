@@ -11,7 +11,7 @@ module FBARPrep
     def for(year)
       fatca_data = YAML.load_file('./data/fatca.yml')
 
-      Year.new(year, Data.fbar_thresholds.fetch(year))
+      Year.new(year, Data.fatca_thresholds.fetch(year))
     end
   end
 end

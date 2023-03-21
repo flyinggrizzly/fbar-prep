@@ -13,8 +13,8 @@ module FBARPrep
         .map {|name| File.join(data_dir, *path_elements, name)}
     end
 
-    def fbar_thresholds
-      YAML.load_file(File.join(data_dir, 'fatca.yml'))
+    def fatca_thresholds
+      YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('fatca_thresholds')
     end
 
     def account_records
