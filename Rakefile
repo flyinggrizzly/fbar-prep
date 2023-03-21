@@ -33,13 +33,9 @@ end
 task :generate_csv do
   strategy = ENV.fetch('STRATEGY', 'both').to_sym
 
-  years = ENV.fetch('YEARS', "2019,2020,2021").split(',').map(&:to_i)
+  years = FBARPrep::Data.fatca_thresholds.keys
 
   years.each do |year|
-    FBARPrep.generate_report(
-      year,
-      FBARPrep.accounts,
-      strategy:
-    )
+    FBARPrep.generate_report(year, FBARPrep.accounts, strategy:)
   end
 end

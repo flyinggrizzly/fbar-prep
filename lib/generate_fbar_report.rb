@@ -2,24 +2,22 @@ require './lib/fbar_tax_year/requirement_calculator'
 
 module FBARPrep
   class GenerateFBARReport
-    def initialize(fbar_years, accounts, strategy:)
-      @fbar_years = fbar_years
-      @years = fbar_years.map(&:year)
+    def initialize(fbar_year, accounts, strategy:)
+      @fbar_year = fbar_year
+      @year = fbar_year.year
       @accounts = accounts
       @strategy = strategy
-      @year_calculators = @fbar_years.map {|year|
-        FBARTaxYear::RequirementCalculator.new(year, accounts, strategy:)
-      }
+      @year_calculator = FBARTaxYear::RequirementCalculator.new(@fbar_year, accounts, strategy:)
     end
 
-    attr_reader :fbar_years,
-      :years,
+    attr_reader :fbar_year,
+      :year,
       :accounts,
-      :year_calculators,
+      :year_calculator,
       :strategy
 
     def perform
-      data = year_calculators.map(&:report_data)
+      data = year_calculator.report_data
 
       csv = CSV.generate do |c|
         # headers
@@ -37,13 +35,12 @@ module FBARPrep
       end
 
       strat = strategy == :both ? "[eod,max]" : strategy.to_s
-      timeframe = years.size > 1 ? "[#{years.join(',')}]" : years.first
 
       path_elems = [
         "fbar_report",
-        "years=#{timeframe}",
+        "year=#{year}",
         "strategy=#{strat}",
-        "generate=#{Time.now.strftime('%Y-%m-%dT%H-%M-%S')}",
+        "generated_at=#{Time.now.strftime('%Y-%m-%dT%H-%M-%S')}",
       ]
 
       path = File.join('./output', "#{path_elems.join('__')}.csv")
