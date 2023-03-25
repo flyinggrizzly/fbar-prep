@@ -16,13 +16,7 @@ module FBARPrep
       @@configured = true
     end
 
-    def from_float_on(float, currency, year)
-      raise UnconfiguredMoneyError.new unless @@configured
-
-      from_float(float, currency, bank: BankFactory.for(currency, year))
-    end
-
-    def from_float(float, currency, bank: nil)
+    def from_float(float, currency)
       raise UnconfiguredMoneyError.new unless @@configured
 
       currency_exponent = ::Money::Currency.new(currency).exponent
@@ -31,8 +25,7 @@ module FBARPrep
 
       ::Money.from_cents(
         (Float(float) * to_cents_factor),
-        currency,
-        bank:
+        currency
       )
     end
   end

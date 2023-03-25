@@ -36,7 +36,7 @@ module FBARPrep
       end
 
       def money(float, date)
-        Currency.from_float_on(float, account.currency, date.year)
+        Currency.from_float(float, account.currency)
       end
 
       def rows
