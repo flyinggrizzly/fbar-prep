@@ -1,3 +1,4 @@
+require 'pry'
 require 'date'
 
 require './lib/fbar_prep'
