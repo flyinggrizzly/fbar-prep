@@ -7,6 +7,8 @@ require_relative './check_sequentiality_of_statements'
 require_relative './generate_fbar_report'
 require_relative './fbar_tax_year'
 
+FBARPrep::Currency.configure!
+
 module FBARPrep
   extend self
 
