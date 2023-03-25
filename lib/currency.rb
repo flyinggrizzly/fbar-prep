@@ -1,6 +1,6 @@
 require 'money'
 
-require './lib/money/bank_factory'
+require './lib/currency/bank_factory'
 
 module FBARPrep
   module Currency

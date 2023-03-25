@@ -1,4 +1,5 @@
 require 'money'
+require './lib/data'
 
 module FBARPrep
   module Currency
