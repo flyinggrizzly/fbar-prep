@@ -40,7 +40,7 @@ module FBARPrep
       end
 
       def rows
-        map.ordered_rows(csv.entries)
+        @rows ||= map.ordered_rows(csv.entries)
       end
     end
   end

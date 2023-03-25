@@ -4,7 +4,7 @@ require_relative './csv_map/special_value_evaluators'
 require_relative './csv_map/factory'
 require_relative './csv_map/validator'
 require_relative './csv_map/value_mappers'
-require_relative './csv_map/ordering'
+require_relative './csv_map/ordered_rows'
 require_relative './statement'
 
 module FBARPrep
@@ -63,13 +63,7 @@ module FBARPrep
     def ordered_rows(rows)
       first_csv_row_is = map.fetch('first_csv_row_is')
 
-      if  Ordering.reverse?(first_csv_row_is)
-        rows.reverse
-      elsif Ordering.static?(first_csv_row_is)
-        rows
-      else
-        raise 'wtf'
-      end
+      OrderedRows.new(first_csv_row_is, rows).rows
     end
 
     private

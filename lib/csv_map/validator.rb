@@ -1,4 +1,4 @@
-require './lib/csv_map/ordering'
+require './lib/csv_map/ordered_rows'
 
 module FBARPrep
   class CSVMap
@@ -65,7 +65,7 @@ module FBARPrep
 
         errors.push(
           "Invalid 'first_csv_row_is' value '#{csv_order}', must be 'new', 'newest', 'old', or 'oldest'"
-        ) unless CSVMap::Ordering.valid?(csv_order)
+        ) unless CSVMap::OrderedRows.valid?(csv_order)
       end
     end
   end
