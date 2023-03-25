@@ -30,8 +30,7 @@ module FBARPrep
 
     OPTIONAL_MAPPINGS = [
       "type",
-      "in",
-      "out",
+      "amount",
       "details",
     ].freeze
 
@@ -52,10 +51,10 @@ module FBARPrep
 
       mappings = map.fetch('mappings')
 
-      mappings.each do |our_field, foreign_field_data|
-        value = ValueMappers.map(our_field, foreign_field_data, csv_row, transactions)
+      mappings.each do |our_field, mapping|
+        value = ValueMappers.map(our_field, mapping, csv_row, transactions)
 
-        row.public_send("#{our_field}=", transform_value(our_field, value))
+        row.public_send("#{our_field}=",  value)
       end
 
       row
@@ -77,18 +76,6 @@ module FBARPrep
 
     def validate!
       Validator.new(REQUIRED_MAPPINGS, OPTIONAL_MAPPINGS, map).validate!
-    end
-
-    def transform_value(our_field, value)
-      return float_or_nil(value) if ['balance', 'amount'].include?(our_field)
-
-      value
-    end
-
-    def float_or_nil(value)
-      return nil if value.nil?
-
-      value.to_f
     end
   end
 end
