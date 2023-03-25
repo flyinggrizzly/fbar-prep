@@ -1,6 +1,8 @@
 require 'date'
 require 'yaml'
 
+require './lib/data/result'
+
 module FBARPrep
   module Data
     extend self
@@ -18,7 +20,23 @@ module FBARPrep
     end
 
     def irs_exchange_rate_for(currency, year)
-      YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('irs_published_exchange_rates').fetch(currency).fetch(year)
+      yaml = YAML.load_file(File.join(data_dir, 'fatca.yml'))
+
+      exchange_rates = yaml.fetch('irs_published_exchange_rates', nil)
+
+      return Result.error(nil) if exchange_rates.nil?
+
+      currency_data = exchange_rates.fetch(currency, nil)
+
+      return Result.error(nil) if currency_data.nil?
+
+      rate = currency_data.fetch(year, nil)
+
+      if rate.nil?
+        Result.error(nil)
+      else
+        Result.ok(rate)
+      end
     end
 
     def account_records
