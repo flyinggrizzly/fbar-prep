@@ -41,10 +41,12 @@ module FBARPrep
 
         data = [
           {
+            'year' => year,
+            'bank name' => nil,
+            'bank address' => nil,
             'account' => nil,
             'account currency' => nil,
-            'year' => year,
-            'fbar threshold' => REPORTING_THRESHOLD.to_f,
+            'fbar threshold (USD)' => REPORTING_THRESHOLD.to_f,
             'highest combined eod balance' => float_or_nil(highest_eod[:eod_balance]),
             'date of highest combined eod balance' => strdate(date_of_highest_eod_balance),
             'highest combined max balance' => float_or_nil(highest_max[:max_balance]),
@@ -56,17 +58,17 @@ module FBARPrep
             'highest eod account balance (USD)' => nil,
             'highest max account balance (local currency)' => nil,
             'highest max account balance (USD)' => nil,
-            'bank name' => nil,
-            'bank address' => nil,
           }
         ]
 
         accounts.each do |account|
           data.push({
-            'account' => account.handle,
-            'account currency' => account.currency,
             'year' => year,
-            'fbar threshold' => nil,
+            'bank name' => account.full_provider_name,
+            'bank address' => account.address,
+            'account' => account.identifier,
+            'account currency' => account.currency,
+            'fbar threshold (USD)' => nil,
             'highest combined eod balance' => nil,
             'date of highest combined eod balance' => nil,
             'highest combined max balance' => nil,
@@ -90,8 +92,6 @@ module FBARPrep
             'highest max account balance (USD)' => float_or_nil(
               usd(account.balance_on(date_of_highest_max_balance, :max))
             ),
-            'bank name' => account.full_provider_name,
-            'bank address' => account.address,
           })
         end
 

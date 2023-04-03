@@ -74,6 +74,10 @@ module FBARPrep
 
     class PensionAccount < Account
       def_delegators :@account_record, :policy_number
+
+      def identifier
+        policy_number
+      end
     end
 
     class BankAccount < Account
@@ -82,6 +86,10 @@ module FBARPrep
         :sort_code,
         :closing_date,
         :joint
+
+      def identifier
+        "#{number}/#{sort_code}"
+      end
 
       def bank_name
         provider
