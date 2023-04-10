@@ -61,7 +61,7 @@ module FBARPrep
     private
 
     def prepare_balance!
-      @running_balance = RunningBalance.new(statements.flat_map(&:transactions))
+      @running_balance = RunningBalance.new(transactions)
     end
 
     def load_statements!
