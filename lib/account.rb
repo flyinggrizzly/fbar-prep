@@ -58,6 +58,10 @@ module FBARPrep
       statements.flat_map(&:transactions)
     end
 
+    def balance_available?(date)
+      running_balance.any_data_for?(date)
+    end
+
     private
 
     def prepare_balance!

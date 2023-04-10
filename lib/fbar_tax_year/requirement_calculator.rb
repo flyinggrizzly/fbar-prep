@@ -62,6 +62,13 @@ module FBARPrep
         ]
 
         accounts.each do |account|
+          # Check the last day of the year.
+          #
+          # If the account was opened during the year, there will be a balance.
+          # If the account was opened after the single highest combined balance date, that will be nil, but we still
+          # have to report the EOY balance.
+          next unless account.balance_available?(end_of_year)
+
           data.push({
             'year' => year,
             'bank name' => account.full_provider_name,
