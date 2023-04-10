@@ -1,6 +1,4 @@
-require 'yaml'
-
-require './lib/data'
+require './lib/fatca/threshold'
 
 module FBARPrep
   module FBARTaxYear
@@ -9,9 +7,7 @@ module FBARPrep
     Year = Struct.new(:year, :combined_total_threshold)
 
     def for(year)
-      fatca_data = YAML.load_file('./data/fatca.yml')
-
-      Year.new(year, Data.fatca_thresholds.fetch(year))
+      Year.new(year, FATCA.reporting_threshold)
     end
   end
 end

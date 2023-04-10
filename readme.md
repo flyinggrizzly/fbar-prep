@@ -62,7 +62,9 @@ In the `data/` directory...
    currencies you need (e.g. `gbp`, `eur`). Under these blocks add key-value pair entries for each year you need to
    report, with the IRS published exchange rate for that year as the value (this should be the Dollar -> Local exchange
    rate, with for GBP is usually < 1.0). You can find the rates, or instructions for finding other rates, on [the IRS
-   site](https://www.irs.gov/individuals/international-taxpayers/yearly-average-currency-exchange-rates)
+   site](https://www.irs.gov/individuals/international-taxpayers/yearly-average-currency-exchange-rates). You can also
+   optionally add a `years` entry, with an array of years you want to generate reports for (if more than one supplied
+   via CLI)
 2. for each bank/pension provider you have data for, create a subdirectory with a simple name (e.g. "Barclays PLC" =>
    "barclays")
 3. for each account with each provider, create a subdirectory for the account with a simple name (e.g.
