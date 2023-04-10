@@ -29,6 +29,10 @@ module FBARPrep
       end
     end
 
+    def any_data_for?(date)
+      !balance_on(date).nil?
+    end
+
     private
 
     attr_reader :known_dates

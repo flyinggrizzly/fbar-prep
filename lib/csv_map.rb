@@ -4,7 +4,7 @@ require_relative './csv_map/special_value_evaluators'
 require_relative './csv_map/factory'
 require_relative './csv_map/validator'
 require_relative './csv_map/value_mappers'
-require_relative './csv_map/ordering'
+require_relative './csv_map/ordered_rows'
 require_relative './statement'
 
 module FBARPrep
@@ -30,8 +30,7 @@ module FBARPrep
 
     OPTIONAL_MAPPINGS = [
       "type",
-      "in",
-      "out",
+      "amount",
       "details",
     ].freeze
 
@@ -52,11 +51,10 @@ module FBARPrep
 
       mappings = map.fetch('mappings')
 
-      mappings.each do |our_field, foreign_field_data|
-        value = ValueMappers.map(our_field, foreign_field_data, csv_row, transactions)
+      mappings.each do |our_field, mapping|
+        value = ValueMappers.map(our_field, mapping, csv_row, transactions)
 
-
-        row.public_send("#{our_field}=", transform_value(our_field, value))
+        row.public_send("#{our_field}=",  value)
       end
 
       row
@@ -65,31 +63,13 @@ module FBARPrep
     def ordered_rows(rows)
       first_csv_row_is = map.fetch('first_csv_row_is')
 
-      if  Ordering.reverse?(first_csv_row_is)
-        rows.reverse
-      elsif Ordering.static?(first_csv_row_is)
-        rows
-      else
-        raise 'wtf'
-      end
+      OrderedRows.new(first_csv_row_is, rows).rows
     end
 
     private
 
     def validate!
       Validator.new(REQUIRED_MAPPINGS, OPTIONAL_MAPPINGS, map).validate!
-    end
-
-    def transform_value(our_field, value)
-      return float_or_nil(value) if ['balance', 'amount'].include?(our_field)
-
-      value
-    end
-
-    def float_or_nil(value)
-      return nil if value.nil?
-
-      value.to_f
     end
   end
 end

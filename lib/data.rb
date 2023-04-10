@@ -1,6 +1,8 @@
 require 'date'
 require 'yaml'
 
+require './lib/data/result'
+
 module FBARPrep
   module Data
     extend self
@@ -13,8 +15,32 @@ module FBARPrep
         .map {|name| File.join(data_dir, *path_elements, name)}
     end
 
+    def years
+      YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('years')
+    end
+
     def fatca_thresholds
       YAML.load_file(File.join(data_dir, 'fatca.yml')).fetch('fatca_thresholds')
+    end
+
+    def irs_exchange_rate_for(currency, year)
+      yaml = YAML.load_file(File.join(data_dir, 'fatca.yml'))
+
+      exchange_rates = yaml.fetch('irs_published_exchange_rates', nil)
+
+      return Result.error(nil) if exchange_rates.nil?
+
+      currency_data = exchange_rates.fetch(currency, nil)
+
+      return Result.error(nil) if currency_data.nil?
+
+      rate = currency_data.fetch(year, nil)
+
+      if rate.nil?
+        Result.error(nil)
+      else
+        Result.ok(rate)
+      end
     end
 
     def account_records
@@ -27,10 +53,12 @@ module FBARPrep
             provider: yaml_record.fetch('provider'),
             number: yaml_record.fetch('number', nil),
             sort_code: yaml_record.fetch('sort', nil),
+            policy_number: yaml_record.fetch('policy_number', nil),
             opening_date: yaml_record.fetch('opening_date'),
             closing_date: yaml_record.fetch('closing_date', nil),
             joint: yaml_record.fetch('joint', false),
-            virtual: yaml_record.fetch('virtual', false)
+            virtual: yaml_record.fetch('virtual', false),
+            currency: yaml_record.fetch('currency')
           )
         end
 
@@ -65,8 +93,10 @@ module FBARPrep
       :handle,
       :type,
       :provider,
+      :currency,
       :number,
       :sort_code,
+      :policy_number,
       :opening_date,
       :closing_date,
       :joint,

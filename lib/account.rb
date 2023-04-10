@@ -39,6 +39,7 @@ module FBARPrep
     def_delegators :@account_record,
       :handle,
       :provider,
+      :currency,
       :opening_date,
       :address,
       :full_provider_name
@@ -57,10 +58,14 @@ module FBARPrep
       statements.flat_map(&:transactions)
     end
 
+    def balance_available?(date)
+      running_balance.any_data_for?(date)
+    end
+
     private
 
     def prepare_balance!
-      @running_balance = RunningBalance.new(statements.flat_map(&:transactions))
+      @running_balance = RunningBalance.new(transactions)
     end
 
     def load_statements!
@@ -73,6 +78,10 @@ module FBARPrep
 
     class PensionAccount < Account
       def_delegators :@account_record, :policy_number
+
+      def identifier
+        policy_number
+      end
     end
 
     class BankAccount < Account
@@ -81,6 +90,10 @@ module FBARPrep
         :sort_code,
         :closing_date,
         :joint
+
+      def identifier
+        "#{number}/#{sort_code}"
+      end
 
       def bank_name
         provider

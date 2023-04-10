@@ -8,23 +8,23 @@ module FBARPrep
       class UnknownMapperError < StandardError; end
 
       class << self
-        def map(our_field, foreign_field_data, csv_row, transactions)
-          if foreign_field_data.is_a?(String)
-            if SpecialValueEvaluators.special_value?(foreign_field_data)
-              SpecialValueEvaluators.for(foreign_field_data, csv_row, transactions).evaluate
+        def map(our_field, mapping, csv_row, transactions)
+          if mapping.is_a?(String)
+            if SpecialValueEvaluators.special_value?(mapping)
+              SpecialValueEvaluators.for(mapping, csv_row, transactions).evaluate
             else
-              SimpleMapper.map!(csv_row, foreign_field_data)
+              SimpleMapper.map!(csv_row, mapping)
             end
           elsif our_field == 'date'
             # Date can be handled by simple mapper or the Complex mapper, if the format is ambiguous. The SimpleMapper
             # should take priority.
             #
             # Currently no other fields are supported by the ComplexFieldDefinitionMapper
-            ComplexFieldDefinitionMapper.new(our_field, csv_row, foreign_field_data).map!
-          elsif foreign_field_data.keys == ['compute']
-            ComputedMapper.new(csv_row, foreign_field_data.fetch('compute'), transactions).map!
+            ComplexFieldDefinitionMapper.new(our_field, csv_row, mapping).map!
+          elsif mapping.keys == ['compute']
+            ComputedMapper.new(csv_row, mapping.fetch('compute'), transactions).map!
           else
-            raise UnknownMapperError.new(foreign_field_data, our_field)
+            raise UnknownMapperError.new(mapping, our_field)
           end
         end
       end

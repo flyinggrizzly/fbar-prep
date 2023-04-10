@@ -11,3 +11,7 @@ gem "pry", "~> 0.14.2"
 gem "activesupport", "~> 7.0"
 
 gem "rspec", "~> 3.12"
+
+gem "money", "~> 6.16"
+
+gem "money-collection", "~> 0.0.2"

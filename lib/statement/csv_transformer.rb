@@ -1,5 +1,6 @@
 require './lib/statement'
 require './lib/csv_map'
+require './lib/currency'
 
 module FBARPrep
   class Statement
@@ -27,15 +28,19 @@ module FBARPrep
         transactions.push(Statement::Transaction.new(
           account:,
           date: remapped_data.date,
-          amount: remapped_data.amount,
-          balance: remapped_data.balance,
+          amount: money(remapped_data.amount, remapped_data.date),
+          balance: money(remapped_data.balance, remapped_data.date),
           details: remapped_data.details,
           type: remapped_data.type
         ))
       end
 
+      def money(float, date)
+        Currency.from_float(float, account.currency)
+      end
+
       def rows
-        map.ordered_rows(csv.entries)
+        @rows ||= map.ordered_rows(csv.entries)
       end
     end
   end

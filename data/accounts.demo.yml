@@ -20,7 +20,9 @@ accounts:
     type: current
     provider: demo-bank
     opening_date: 2021-05-01
+    currency: gbp
   - handle: demo-bank-savings-5678
     provider: demo-bank
     type: savings
     opening_date: 2021-12-04
+    currency: gbp

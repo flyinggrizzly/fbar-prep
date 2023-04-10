@@ -1,3 +1,4 @@
+require 'pry'
 require 'date'
 
 require './lib/fbar_prep'
@@ -33,7 +34,8 @@ end
 task :generate_csv do
   strategy = ENV.fetch('STRATEGY', 'both').to_sym
 
-  years = FBARPrep::Data.fatca_thresholds.keys
+  year = ENV['YEAR']&.to_i
+  years = Array(year || Data.years)
 
   years.each do |year|
     FBARPrep.generate_report(year, FBARPrep.accounts, strategy:)

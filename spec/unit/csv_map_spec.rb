@@ -106,8 +106,8 @@ RSpec.describe FBARPrep::CSVMap do
 
         expect(mapper.map_row(row, [])).to eq(described_class::MappedRow.new(
           date: Date.new(2020, 12, 31),
-          amount: 100.00,
-          balance: 231.23,
+          amount: "100",
+          balance: "231.23",
           details: 'Some transaction info',
           type: 'Faster Inward Payment'
         ))

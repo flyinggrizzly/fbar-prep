@@ -8,29 +8,37 @@ module FBARPrep
     module Factory
       extend self
 
+      FILETYPES = [
+        'mapping.json',
+        'mapping.yml',
+        'mapping.yaml'
+      ].freeze
+
       def build(account)
+        file = account_level_mapping_file(account) || provider_level_mapping_file(account)
+
+        raise "need a mapping for provider #{provider} or account #{handle}" if file.nil?
+
+        CSVMap.new(YAML.load_file(file))
+      end
+
+      def provider_level_mapping_file(account)
+        provider = account.provider
+
+        Data.children(provider, filetypes: FILETYPES).tap do |files|
+          raise "too many mappings for provider #{provider}" if files.size > 1
+        end
+          .first
+      end
+
+      def account_level_mapping_file(account)
         provider = account.provider
         handle = account.handle
 
-        filetypes = [
-          'mapping.json',
-          'mapping.yml',
-          'mapping.yaml'
-        ]
-
-        account_level_mappings = Data.children(provider, handle, filetypes:)
-
-        raise "too many mappings for account #{handle}" unless account_level_mappings.size < 2
-
-        return CSVMap.new(YAML.load_file(account_level_mappings.first)) if account_level_mappings.size == 1
-
-        provider_level_mappings = Data.children(provider, filetypes:)
-
-        raise "too many mappings for provider #{provider}" if provider_level_mappings.size > 1
-
-        return CSVMap.new(YAML.load_file(provider_level_mappings.first)) if provider_level_mappings.size == 1
-
-        raise "need a mapping for provider #{provider} or account #{handle}"
+        Data.children(provider, handle, filetypes: FILETYPES).tap do |files|
+          raise "too many mappings for account #{handle}" if files.size > 1
+        end
+          .first
       end
     end
   end
