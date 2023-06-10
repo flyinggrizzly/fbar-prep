@@ -46,6 +46,7 @@ module FBARPrep
             'bank address' => nil,
             'account' => nil,
             'account currency' => nil,
+            'exchange rate to USD' => nil,
             'fbar threshold (USD)' => REPORTING_THRESHOLD.to_f,
             'highest combined eod balance' => float_or_nil(highest_eod[:eod_balance]),
             'date of highest combined eod balance' => strdate(date_of_highest_eod_balance),
@@ -75,6 +76,7 @@ module FBARPrep
             'bank address' => account.address,
             'account' => account.identifier,
             'account currency' => account.currency,
+            'exchange rate to USD' => exchange_rate_to_usd(account.currency),
             'fbar threshold (USD)' => nil,
             'highest combined eod balance' => nil,
             'date of highest combined eod balance' => nil,
@@ -117,6 +119,12 @@ module FBARPrep
         return if money.nil?
 
         currency_converter.convert(money)
+      end
+
+      def exchange_rate_to_usd(source_currency_code)
+        return if source_currency_code.nil?
+
+        currency_converter.rate_for(source_currency_code)
       end
 
       def eod_active?
