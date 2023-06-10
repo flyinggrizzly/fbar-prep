@@ -34,8 +34,12 @@ module FBARPrep
         end
       end
 
-      strat = strategy == :both ? "[eod,max]" : strategy.to_s
+      File.write(path, csv)
+    end
 
+    private
+
+    def path
       path_elems = [
         "fbar_report",
         "year=#{year}",
@@ -43,9 +47,17 @@ module FBARPrep
         "generated_at=#{Time.now.strftime('%Y-%m-%dT%H-%M-%S')}",
       ]
 
-      path = File.join('./output', "#{path_elems.join('__')}.csv")
+      ensure_output_folder
 
-      File.write(path, csv)
+      File.join('./output', "#{path_elems.join('__')}.csv")
+    end
+
+    def strat
+      strategy == :both ? "[eod,max]" : strategy.to_s
+    end
+
+    def ensure_output_folder
+      Dir.mkdir('./output') unless Dir.exist?('./output')
     end
   end
 end
