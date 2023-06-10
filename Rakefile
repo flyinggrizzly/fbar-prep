@@ -2,6 +2,7 @@ require 'pry'
 require 'date'
 
 require './lib/fbar_prep'
+require './lib/data'
 
 task :validate do
   clamp_from_month = ENV.fetch('CLAMP_FROM', '2018-01')
@@ -35,7 +36,7 @@ task :generate_csv do
   strategy = ENV.fetch('STRATEGY', 'both').to_sym
 
   year = ENV['YEAR']&.to_i
-  years = Array(year || Data.years)
+  years = Array(year || FBARPrep::Data.years)
 
   years.each do |year|
     FBARPrep.generate_report(year, FBARPrep.accounts, strategy:)
