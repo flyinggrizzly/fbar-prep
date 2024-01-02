@@ -12,6 +12,7 @@ module FBARPrep
 
     def configure!
       ::Money.locale_backend = :currency
+      ::Money.rounding_mode = BigDecimal::ROUND_HALF_EVEN
 
       @@configured = true
     end
