@@ -51,18 +51,34 @@ module FBARPrep
       transactions.filter {|t| t.date == date}.map(&:balance).max
     end
 
-    def date_of_max_eod_balance(date_range)
+    def date_of_max_eod_balance(date_range = nil)
       candidates = transactions
 
-      candidates = transactions.filter {|txn| date_range.include?(txn.date)} if date_range
+      if date_range.present?
+        # Date range precedes any transaction data
+        return if candidates.all? { |txn| txn.date > date_range.end }
+
+        candidates = candidates.filter {|txn| date_range.include?(txn.date)}
+
+        # We have transactions, but none explicitly fall within our range, so we choose the beginning date.
+        return date_range.begin if candidates.empty? && !transactions.empty?
+      end
 
       candidates.group_by(&:date).values.flat_map(&:last).max_by(&:balance).date
     end
 
-    def date_of_max_balance(date_range)
+    def date_of_max_balance(date_range = nil)
       candidates = transactions
 
-      candidates = transactions.filter {|txn| date_range.include?(txn.date)} if date_range
+      if date_range.present?
+        # Date range precedes any transaction data
+        return if candidates.all? { |txn| txn.date > date_range.end }
+
+        candidates = candidates.filter {|txn| date_range.include?(txn.date)}
+
+        # We have transactions, but none explicitly fall within our range, so we choose the beginning date.
+        return date_range.begin if candidates.empty? && !transactions.empty?
+      end
 
       candidates.max_by(&:balance).date
     end

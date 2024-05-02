@@ -16,37 +16,26 @@ worse](https://www.wired.com/2010/11/1110mars-climate-observer-report/), so trea
 
 ## The problem
 
-The IRS requires that US persons report the balance of all foreign financial accounts on the day that the combined total
-value is the highest in a given tax year. This is a giant pain in the ass, especially when you've got a ton of accounts.
+It's a pain in the butt to trawl through bank statements to find the highest balance during a given period. This tool
+automates that, given some CSV data.
 
 ## How this solves it
 
 This tool accepts a pile of CSVs for accounts, mappings files to tell it how to convert the CSV rows into its internal
 `Statement::Transaction` model, and then does the work for you.
 
-It then iterates over every day in the year, asks each `Account` record for its balance on that day (by one of two
-stratgies--the end-of-day balance, or the highest balance on the day), and identifies the day with the total highest
-balance. If an account has no transactions on a given date, the `RunningBalance` calculator scans back to the last
-most-recent date and uses its last balance.
+For each `Account`, it finds the highest balance and data, and adds it to a CSV. For quiet accounst that had no
+transactions during the year, it will use the most recent balance available (e.g. last transaction was 2021-01-01, and
+you're prepping an FBAR for 2023: it will give you the balance as of 2021-01-01). This assumes that you are not trying
+to generate data for accounts that are closed, and that you have added all available data. Some providers will only give
+you CSV data for time periods in which they had activity, so this will scan back to account for quiet months/years.
 
 It then produces a CSV that includes:
 
 - the FBAR threshold for the year ($10k, but you should include config data for currencies that match your local
   currency)
-- the date of the highest combined value
-- the value on that date for each account
-
-## Limitations
-
-- currently assumes a single currency (default config data is for GBP in `data/fatca.yml`)
-- it's unclear if EOD or Max is the appropriate strategy for reporting in the FBAR
-
-### EOD vs. Max
-
-I think technically MAX would be the correct approach, but this could open up situations where you might reprot a max
-balance of n * AMOUNT, if you happened to transfer AMOUNT between multiple accounts on the same day. This is an edge
-case, but be aware that running with MAX is the right start, but the EOD strategy can be a good sanity check.
-
+- for each account, an entry with the data and highest balance, as well as EOY balances, and the requisite reporting
+  info like bank name, account identifiers, address, etc
 
 ## Usage
 
@@ -146,7 +135,5 @@ mappings:
 
 To generate a CSV report, once the tool is installed and data and mappings are prepped, run
 
-`bundle exec rake generate_csv [YEARS=2020,2021,2022] [STRATEGY={both|max|eod}]]`
+`bundle exec rake generate_csv [YEARS=2020,2021,2022]`
 
-It will generate a CSV for each year provided, using the strategy requested (default is to generate CSVs with data for
-both `eod` and `max` strategies). Default years are all those provided in `data/fatca.yml`.

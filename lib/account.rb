@@ -41,17 +41,31 @@ module FBARPrep
       :provider,
       :currency,
       :opening_date,
+      :closing_date,
       :address,
       :full_provider_name
 
     attr_reader :statements, :running_balance
 
+    def open_in?(date_range)
+      opened_in_time = opening_date < date_range.end
+      still_open = closing_date.nil? || closing_date > date_range.begin
+
+      opened_in_time && still_open
+    end
+
     def balance_on(date, strategy = :eod)
       running_balance.balance_on(date, strategy)
     end
 
-    def highest_balance_date(strategy = :eod)
-      running_balance.highest_balance_date(strategy)
+    def highest_balance_date(strategy = :eod, date_range = nil)
+      running_balance.highest_balance_date(strategy, date_range)
+    end
+
+    def max_balance_and_date(date_range = nil)
+      date = highest_balance_date(:max, date_range)
+
+      [balance_on(date, :max), date]
     end
 
     def transactions
@@ -88,7 +102,6 @@ module FBARPrep
       def_delegators :@account_record,
         :number,
         :sort_code,
-        :closing_date,
         :joint
 
       def identifier

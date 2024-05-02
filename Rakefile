@@ -32,6 +32,15 @@ task :validate do
   end
 end
 
+desc <<~DESC
+  Generates CSV(s) for available data.
+
+  Parameters can be passed as env vars.
+
+  Supported parameters:
+
+    YEAR=YYYY, the year to generate a report for. Default is to generate a report for all years defined in `fatca.yml`.
+DESC
 task :generate_csv do
   strategy = ENV.fetch('STRATEGY', 'both').to_sym
 
