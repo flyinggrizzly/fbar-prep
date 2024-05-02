@@ -50,8 +50,14 @@ module FBARPrep
       running_balance.balance_on(date, strategy)
     end
 
-    def highest_balance_date(strategy = :eod)
-      running_balance.highest_balance_date(strategy)
+    def highest_balance_date(strategy = :eod, date_range = nil)
+      running_balance.highest_balance_date(strategy, date_range)
+    end
+
+    def max_balance_and_date(date_range = nil)
+      date = highest_balance_date(:max, date_range)
+
+      [balance_on(date, :max), date]
     end
 
     def transactions
