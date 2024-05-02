@@ -41,10 +41,18 @@ module FBARPrep
       :provider,
       :currency,
       :opening_date,
+      :closing_date,
       :address,
       :full_provider_name
 
     attr_reader :statements, :running_balance
+
+    def open_in?(date_range)
+      opened_in_time = opening_date < date_range.end
+      still_open = closing_date.nil? || closing_date > date_range.begin
+
+      opened_in_time && still_open
+    end
 
     def balance_on(date, strategy = :eod)
       running_balance.balance_on(date, strategy)
@@ -94,7 +102,6 @@ module FBARPrep
       def_delegators :@account_record,
         :number,
         :sort_code,
-        :closing_date,
         :joint
 
       def identifier

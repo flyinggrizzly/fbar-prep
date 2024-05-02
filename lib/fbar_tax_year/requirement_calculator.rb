@@ -24,7 +24,8 @@ module FBARPrep
         end_of_year = Date.new(year, 12, 31)
         date_range = (Date.new(year, 1, 1)..end_of_year)
 
-        return accounts.map do |account|
+        return accounts.filter {|a| a.open_in?(date_range)}
+          .map do |account|
           # Check the last day of the year.
           #
           # If the account was opened during the year, there will be a balance.
