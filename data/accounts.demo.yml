@@ -21,6 +21,13 @@ accounts:
     provider: demo-bank
     opening_date: 2021-05-01
     currency: gbp
+    note: Some useful info, key is ignored by ETL
+    joint: true
+    joint_holders:
+      - name: Furriner Jointholderson
+        us_tax_status: non-resient alien
+      - name: Johnny Appleseed
+        us_tax_status: citizen
   - handle: demo-bank-savings-5678
     provider: demo-bank
     type: savings

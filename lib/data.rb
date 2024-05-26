@@ -1,6 +1,8 @@
 require 'date'
 require 'yaml'
 
+require './lib/data/account_record'
+require './lib/data/provider_record'
 require './lib/data/result'
 
 module FBARPrep
@@ -58,7 +60,13 @@ module FBARPrep
             closing_date: yaml_record.fetch('closing_date', nil),
             joint: yaml_record.fetch('joint', false),
             virtual: yaml_record.fetch('virtual', false),
-            currency: yaml_record.fetch('currency')
+            currency: yaml_record.fetch('currency'),
+            joint_holders: yaml_record.fetch('joint_holders', []).map do |joint_holder|
+              AccountRecord::JointHolder.new(
+                name: joint_holder.fetch('name'),
+                us_tax_status: joint_holder.fetch('us_tax_status', nil)
+              )
+            end
           )
         end
 
@@ -87,52 +95,6 @@ module FBARPrep
 
     def provider_record_for_handle(provider_handle)
       provider_records.detect {|pr| pr.handle == provider_handle}
-    end
-
-    AccountRecord = Struct.new(
-      :handle,
-      :type,
-      :provider,
-      :currency,
-      :number,
-      :sort_code,
-      :policy_number,
-      :opening_date,
-      :closing_date,
-      :joint,
-      :virtual,
-      keyword_init: true
-    ) do
-      def bank_account?
-        ['current', 'savings'].include?(type)
-      end
-
-      def virtual?
-        virtual == true
-      end
-
-      def provider_record
-        @provider_record ||= Data.provider_record_for_handle(provider)
-      end
-
-      def full_provider_name
-        provider_record.name
-      end
-
-      def address
-        provider_record.address
-      end
-    end
-
-    ProviderRecord = Struct.new(
-      :handle,
-      :name,
-      :address,
-      keyword_init: true
-    ) do
-      def account_records
-        @account_records ||= Data.account_records_for_provider(handle)
-      end
     end
 
     def account_data

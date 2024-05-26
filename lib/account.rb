@@ -43,7 +43,9 @@ module FBARPrep
       :opening_date,
       :closing_date,
       :address,
-      :full_provider_name
+      :full_provider_name,
+      :joint,
+      :joint_holders
 
     attr_reader :statements, :running_balance
 
@@ -74,6 +76,14 @@ module FBARPrep
 
     def balance_available?(date)
       running_balance.any_data_for?(date)
+    end
+
+    def joint?
+      !!joint || joint_holders.any?
+    end
+
+    def joint_holders_summary(with_us_tax_status: true)
+      joint_holders.map {|jh| jh.summary(with_us_tax_status:)}.join(", ")
     end
 
     private

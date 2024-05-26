@@ -39,6 +39,8 @@ module FBARPrep
             'bank name' => account.full_provider_name,
             'bank address' => account.address,
             'account' => account.identifier,
+            'joint account' => account.joint?,
+            'joint holders' => account.joint_holders_summary(with_us_tax_status: true),
             'account currency' => account.currency,
             'exchange rate to USD' => exchange_rate_to_usd(account.currency),
             'fbar threshold (USD)' => REPORTING_THRESHOLD.to_f,
