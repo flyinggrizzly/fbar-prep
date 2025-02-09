@@ -8,7 +8,7 @@ module FBARPrep
       @filename = filename
       @account = account
 
-      raw_data = CSV.read(filename, headers: true)
+      raw_data = CSV.read(filename, headers: true, encoding: "bom|utf-8")
 
       @data = CsvTransformer.new(bank_account, raw_data).transform
     end
