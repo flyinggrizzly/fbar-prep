@@ -5,13 +5,14 @@ require './lib/currency'
 module FBARPrep
   class Statement
     class CsvTransformer
-      def initialize(account, csv)
+      def initialize(account, csv, filename:)
         @account = account
         @csv = csv
         @map = FBARPrep::CSVMap.for(account)
+        @filename = filename
       end
 
-      attr_reader :account, :csv, :map
+      attr_reader :account, :csv, :map, :filename
 
       def transform
         transactions = []
@@ -33,6 +34,8 @@ module FBARPrep
           details: remapped_data.details,
           type: remapped_data.type
         ))
+      rescue => e
+        raise "Account #{account.handle} file: #{filename} encountered error... #{e.message}"
       end
 
       def money(float, date)
