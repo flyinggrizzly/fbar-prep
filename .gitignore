@@ -1,6 +1,7 @@
 # Data and Output directories
 data/*
 output/*
+interest_summaries/*
 
 *.gem
 *.rbc

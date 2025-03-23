@@ -9,7 +9,15 @@ require_relative './statement'
 
 module FBARPrep
   class CSVMap
-    MappedRow = Struct.new(:date, :amount, :balance, :details, :type, keyword_init: true)
+    MappedRow = Struct.new(
+      :date,
+      :amount,
+      :balance,
+      :details,
+      :type,
+      :interest_transaction,
+      keyword_init: true
+    )
 
     class << self
       def for(account)
@@ -32,6 +40,7 @@ module FBARPrep
       "type",
       "amount",
       "details",
+      "interest_transaction",
     ].freeze
 
     def initialize(map)

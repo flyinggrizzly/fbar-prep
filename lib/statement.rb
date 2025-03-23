@@ -26,6 +26,19 @@ module FBARPrep
       transactions.first.date
     end
 
-    Transaction = Struct.new(:account, :date, :details, :type, :amount, :balance, keyword_init: true)
+    Transaction = Struct.new(
+      :account, 
+      :date, 
+      :details, 
+      :type, 
+      :interest_transaction, 
+      :amount, 
+      :balance, 
+      keyword_init: true
+    ) do
+      def in?(date_range)
+        date_range.include?(date)
+      end
+    end
   end
 end
