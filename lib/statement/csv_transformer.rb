@@ -32,6 +32,7 @@ module FBARPrep
           amount: money(remapped_data.amount, remapped_data.date),
           balance: money(remapped_data.balance, remapped_data.date),
           details: remapped_data.details,
+          interest_transaction: remapped_data.interest_transaction,
           type: remapped_data.type
         ))
       rescue => e

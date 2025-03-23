@@ -6,6 +6,7 @@ require_relative './account'
 require_relative './check_sequentiality_of_statements'
 require_relative './generate_fbar_report'
 require_relative './fbar_tax_year'
+require_relative './interest_summary_calculator'
 
 FBARPrep::Currency.configure!
 
@@ -26,5 +27,17 @@ module FBARPrep
 
   def accounts
     Account.all
+  end
+
+  def generate_interest_summary_report(
+    year:,
+    accounts:,
+    outpath: "interest_summaries"
+  )
+    InterestSummaryCalculator.new(
+      year:,
+      accounts:,
+      outpath:,
+    ).generate_report!
   end
 end

@@ -60,3 +60,15 @@ end
 task :clean do
   puts `rm output/*`
 end
+
+desc <<~DESC
+  Identifies interest earned across named providers/accounts.
+DESC
+task :calculate_interest do
+  year = ENV['YEAR']&.to_i
+
+  FBARPrep.generate_interest_summary_report(
+    year:,
+    accounts: FBARPrep.accounts,
+  )
+end

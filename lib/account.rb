@@ -86,6 +86,18 @@ module FBARPrep
       joint_holders.map {|jh| jh.summary(with_us_tax_status:)}.join(", ")
     end
 
+    def has_interest_transactions?(date_range = nil)
+      interest_transactions(date_range).any?
+    end
+
+    def interest_transactions(date_range = nil)
+      return transactions.filter(&:interest_transaction) if date_range.nil?
+
+      transactions.filter do |transaction|
+        transaction.in?(date_range) && transaction.interest_transaction
+      end
+    end
+
     private
 
     def prepare_balance!
