@@ -2,11 +2,12 @@ require './lib/fbar_tax_year/requirement_calculator'
 
 module FBARPrep
   class GenerateFBARReport
-    def initialize(fbar_year, accounts, strategy:)
+    def initialize(fbar_year, accounts, strategy:, outpath:)
       @fbar_year = fbar_year
       @year = fbar_year.year
       @accounts = accounts
       @strategy = strategy
+      @outpath = outpath
       @year_calculator = FBARTaxYear::RequirementCalculator.new(@fbar_year, accounts, strategy:)
     end
 
@@ -49,7 +50,7 @@ module FBARPrep
 
       ensure_output_folder
 
-      File.join('./output', "#{path_elems.join('__')}.csv")
+      File.join("./#{@outpath}", "#{path_elems.join('__')}.csv")
     end
 
     def strat
@@ -57,7 +58,7 @@ module FBARPrep
     end
 
     def ensure_output_folder
-      Dir.mkdir('./output') unless Dir.exist?('./output')
+      Dir.mkdir("./#{@outpath}") unless Dir.exist?("./#{@outpath}")
     end
   end
 end

@@ -16,8 +16,8 @@ module FBARPrep
     CheckSequentialityOfStatements.new(account, clamp_from:, clamp_to:).perform
   end
 
-  def generate_report(year, account_or_accounts, strategy: :both)
-    GenerateFBARReport.new(FBARTaxYear.for(year), Array(account_or_accounts), strategy:).perform
+  def generate_report(year, account_or_accounts, strategy: :both, outpath: "output")
+    GenerateFBARReport.new(FBARTaxYear.for(year), Array(account_or_accounts), strategy:, outpath:).perform
   end
 
   def account(handle)

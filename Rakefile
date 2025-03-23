@@ -42,13 +42,18 @@ desc <<~DESC
     YEAR=YYYY, the year to generate a report for. Default is to generate a report for all years defined in `fatca.yml`.
 DESC
 task :generate_csv do
-  strategy = ENV.fetch('STRATEGY', 'both').to_sym
-
   year = ENV['YEAR']&.to_i
   years = Array(year || FBARPrep::Data.years)
 
+  outpath = ENV["OUT"] || "output"
+
   years.each do |year|
-    FBARPrep.generate_report(year, FBARPrep.accounts, strategy:)
+    FBARPrep.generate_report(
+      year,
+      FBARPrep.accounts,
+      strategy: :max,
+      outpath:,
+    )
   end
 end
 
