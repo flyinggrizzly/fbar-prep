@@ -30,7 +30,7 @@ module FBARPrep
 
         private
 
-        def value(operand)
+        def value(operand, allow_nil_in_field: false)
           val = if SpecialValueEvaluators.special_value?(operand)
                   SpecialValueEvaluators.for(operand, csv_row, transactions).evaluate
                 elsif is_computation?(operand)
@@ -38,7 +38,11 @@ module FBARPrep
                   
                   Computations.for(computation_name, payload, csv_row, transactions).perform
                 elsif operand.is_a?(String)
-                  csv_row.fetch(operand)
+                  if allow_nil_in_field
+                    csv_row[operand]
+                  else
+                    csv_row.fetch(operand)
+                  end
                 else
                   raise ImpossibleComputationValueError.new(operand, self.class.mapping_key)
                 end
