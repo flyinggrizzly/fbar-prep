@@ -2,6 +2,7 @@ require_relative './computations/add'
 require_relative './computations/concat'
 require_relative './computations/coerce_number'
 require_relative './computations/first_not_null'
+require_relative './computations/if_field_equals'
 require_relative './computations/multiply'
 require_relative './computations/prefix'
 require_relative './computations/subtract'
@@ -17,6 +18,7 @@ module FBARPrep
         Concat,
         CoerceNumber,
         FirstNotNull,
+        IfFieldEquals,
         Multiply,
         Prefix,
         Subtract,
