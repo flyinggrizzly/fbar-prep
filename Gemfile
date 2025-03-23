@@ -17,3 +17,5 @@ gem "money", "~> 6.19"
 gem "money-collection", "~> 0.0.2"
 
 gem "csv", "~> 3.3"
+
+gem "ruby-lsp"
